@@ -1,8 +1,16 @@
 const express = require('express')
-const app = express()
-const path = require('path')
+const mongoose = require('mongoose')
 const ejs = require('ejs')
-const port = 3000
+const path = require('path')
+const Photo = require('./models/Photo')
+
+const app = express()
+
+// Connect DB
+mongoose.connect('mongodb//127.0.0.1:27017/pcat-test-db',{
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
 
 // Template Engine
 app.set("view engine", "ejs")
@@ -23,11 +31,12 @@ app.get('/add', (req,res)=>{
     res.render('add')
 })
 
-app.post('/photos', (req,res)=>{
-    console.log(req.body);
+app.post('/photos', async (req,res)=>{
+    await Photo.create(req.body)
     res.redirect('/')
 })
 
+const port = 3000
 app.listen(port, ()=>{
     console.log(`Sunucu ${port} portunda başlatıldı..`)
 })
